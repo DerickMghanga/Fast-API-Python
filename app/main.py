@@ -1,11 +1,12 @@
 from typing import Optional
 from fastapi import FastAPI, Response, status, HTTPException
 from pydantic import BaseModel
-from random import randrange
+from random import randranges
+import psycopg
+from psycopg2.extras import RealDictCursor
 
 # Create an Instance for fastAPI
 app = FastAPI()
-
 
 
 # POST/PUT req schema(pydantic model) ensures expected data from client
@@ -13,7 +14,14 @@ class Post(BaseModel):
     title: str
     content: str
     published: bool = True
-    rating: Optional[int] = None
+
+try:
+    conn = psycopg.connect(host='localhost', database="FastAPI", user='postgres', password="Derick3329", cursor_factory=RealDictCursor)
+    cursor = conn.cursor()
+    print("Database connection was successfull !")
+except Exception as error:
+    print("Connectiing to database failed !")
+
 
 
 #Memory to save the posts. Array of dictionaries
